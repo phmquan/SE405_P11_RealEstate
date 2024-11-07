@@ -1,0 +1,27 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final userStateProvider = StateNotifierProvider<UserStateNotifier, UserState>(
+  (ref) => UserStateNotifier(),
+);
+
+class UserState {
+  final String id;
+  final String userName;
+  final String email;
+  final String password;
+  final bool isLoggedIn;
+  final String? resetPasswordToken;
+  final DateTime? resetPasswordExpires;
+  final String? resetPasswordEmail;
+
+  UserState({
+    this.id = '',
+    this.userName = '',
+    this.email = '',
+    this.password = '',
+    this.isLoggedIn = false,
+    this.resetPasswordToken,
+    this.resetPasswordExpires,
+    this.resetPasswordEmail,
+  });
+}
