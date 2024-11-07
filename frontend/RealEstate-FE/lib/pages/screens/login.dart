@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/screens/forgot_password.dart';
+import 'package:frontend/pages/screens/register.dart';
+import 'package:frontend/widgets/other_login.dart';
 import '../../../assets/colors/colors.dart';
 import '../../../assets/icons/icons.dart';
 
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class Login extends StatefulWidget {
+  const Login({super.key});
 
   @override
-  State <LoginScreen> createState() =>  LoginScreenState();
+  State <Login> createState() =>  LoginState();
 }
 
-class LoginScreenState extends State <LoginScreen> {
+class LoginState extends State <Login> {
   final loginfield = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -50,7 +53,7 @@ class LoginScreenState extends State <LoginScreen> {
                   controller: emailController,
                   decoration: InputDecoration(
                     labelText: "Email",
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     prefixIcon: AppIcons.getIcon(AppIcons.email),
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 10.0, 
@@ -141,7 +144,10 @@ class LoginScreenState extends State <LoginScreen> {
                     ),
                     TextButton(
                       onPressed: () {
-                        //mở REGISTER SCREEN
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Register()),
+                        );
                       }, 
                       child: const Text(
                         "Đăng ký tài khoản mới",
@@ -155,26 +161,14 @@ class LoginScreenState extends State <LoginScreen> {
                   ],
                 ),
                 const SizedBox(height: 10,),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Divider(
-                      color: Colors.black,
-                      height: 1,
-                    ),
-                    Text(
-                      "Hoặc đăng nhập bằng"
-                    ),
-                    Divider(
-                      color: Colors.black,
-                      height: 1,
-                    ),
-                  ],
-                ),
+                const OtherLogin(),
                 const SizedBox(height: 10,),
                 TextButton(
                   onPressed: () {
-                    //mở FORGOT PASSWORD SCREEN
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ForgotPassword()),
+                    );
                   }, 
                   child: const Text(
                     "Quên mật khẩu",
@@ -189,7 +183,6 @@ class LoginScreenState extends State <LoginScreen> {
             )
           ),
         ),
-        
       ),
     );
   }
