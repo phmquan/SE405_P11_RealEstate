@@ -1,10 +1,10 @@
-package com.example.SE405_P11_RealEstateApp;
+package vn.hoidanit.realestate;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Se405P11RealEstateAppApplicationTests {
+class JobhunterApplicationTests {
 
 	@Test
 	void contextLoads() {
