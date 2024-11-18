@@ -19,7 +19,7 @@ public class UserDetailsCustom implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        vn.hoidanit.realestate.domain.User user = this.userService.handleGetUserByUserName(username);
+        vn.hoidanit.realestate.domain.User user = this.userService.handleGetUserByUsername(username);
         if(user == null) {
             throw new UsernameNotFoundException("Username/password khong hop le");
         }
