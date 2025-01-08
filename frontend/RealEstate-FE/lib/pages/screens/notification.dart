@@ -12,7 +12,10 @@ class _NotificationState extends State<Notification> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: Text("Thông báo", style: TextStyle(fontSize: 40),),
+        child: Text(
+          "Thông báo",
+          style: TextStyle(fontSize: 40),
+        ),
       ),
     );
   }

@@ -12,7 +12,10 @@ class _PostingState extends State<Posting> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: Text("Đăng tin", style: TextStyle(fontSize: 40),),
+        child: Text(
+          "Đăng tin",
+          style: TextStyle(fontSize: 40),
+        ),
       ),
     );
   }

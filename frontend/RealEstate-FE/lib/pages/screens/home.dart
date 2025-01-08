@@ -12,7 +12,10 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: Text("Trang chủ", style: TextStyle(fontSize: 40),),
+        child: Text(
+          "Trang chủ",
+          style: TextStyle(fontSize: 40),
+        ),
       ),
     );
   }

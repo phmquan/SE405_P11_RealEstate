@@ -12,7 +12,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: Text("Quên mật khẩu", style: TextStyle(fontSize: 40),),
+        child: Text(
+          "Quên mật khẩu",
+          style: TextStyle(fontSize: 40),
+        ),
       ),
     );
   }

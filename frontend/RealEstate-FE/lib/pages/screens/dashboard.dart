@@ -12,7 +12,10 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: Text("Quản lý tin", style: TextStyle(fontSize: 40),),
+        child: Text(
+          "Quản lý tin",
+          style: TextStyle(fontSize: 40),
+        ),
       ),
     );
   }

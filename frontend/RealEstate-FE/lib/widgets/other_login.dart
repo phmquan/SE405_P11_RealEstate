@@ -24,8 +24,7 @@ class _OtherLoginState extends State<OtherLogin> {
             Text(
               " Hoặc đăng nhập bằng ",
               style: TextStyle(
-                fontSize: 12, 
-                
+                fontSize: 12,
               ),
             ),
             Expanded(
@@ -36,7 +35,9 @@ class _OtherLoginState extends State<OtherLogin> {
             ),
           ],
         ),
-        const SizedBox(height: 10,),
+        const SizedBox(
+          height: 10,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

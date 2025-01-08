@@ -12,7 +12,10 @@ class _SettingState extends State<Setting> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: Text("Tài khoản", style: TextStyle(fontSize: 40),),
+        child: Text(
+          "Tài khoản",
+          style: TextStyle(fontSize: 40),
+        ),
       ),
     );
   }

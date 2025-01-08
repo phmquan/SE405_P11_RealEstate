@@ -14,18 +14,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        
         colorScheme: ColorScheme.fromSeed(
-          primary: AppColors.blue,
-          seedColor: AppColors.lightBlue
-        ),
+            primary: AppColors.blue, seedColor: AppColors.lightBlue),
         scaffoldBackgroundColor: AppColors.white,
-
         useMaterial3: true,
       ),
-      home: 
-      //Login(),
-      Register(),
+      home:
+          //Login(),
+          Register(),
     );
   }
 }
