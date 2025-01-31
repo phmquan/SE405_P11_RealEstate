@@ -25,3 +25,41 @@ class UserState {
     this.resetPasswordEmail,
   });
 }
+
+class UserStateNotifier extends StateNotifier<UserState> {
+  UserStateNotifier() : super(UserState());
+
+  void logIn(String id, String userName, String email, String password,
+      {String? resetPasswordToken, DateTime? resetPasswordExpires}) {
+    state = UserState(
+      id: id,
+      userName: userName,
+      email: email,
+      password: password,
+      isLoggedIn: true,
+      resetPasswordToken: resetPasswordToken,
+      resetPasswordExpires: resetPasswordExpires,
+    );
+    print('User logged in: $email');
+  }
+
+  void logOut() {
+    state = UserState();
+    print('User logged out');
+  }
+
+  void setResetPasswordEmail(String email,
+      {String? resetPasswordToken, DateTime? resetPasswordExpires}) {
+    state = UserState(
+      id: state.id,
+      userName: state.userName,
+      email: state.email,
+      password: state.password,
+      isLoggedIn: state.isLoggedIn,
+      resetPasswordToken: resetPasswordToken,
+      resetPasswordExpires: resetPasswordExpires,
+      resetPasswordEmail: email,
+    );
+    print('Reset password email set in UserStateNotifier: $email');
+  }
+}

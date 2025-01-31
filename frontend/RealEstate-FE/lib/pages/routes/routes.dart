@@ -1,31 +1,107 @@
-import 'package:dio/dio.dart';
-final dio = Dio();
+// ignore_for_file: avoid_print
 
-void request() async {
-  Response response;
-  response = await dio.post("http://localhost:8080/api/v1/auth/login",data: {'username':'username@gmail.com','password':'123456'});
-  print(response.data.toString());
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/pages/screens/Authentication/forgot_password.dart';
+import 'package:frontend/pages/screens/Authentication/login.dart';
+import 'package:frontend/pages/screens/Authentication/register.dart';
+import 'package:frontend/pages/screens/Chat/chat.dart';
+import 'package:frontend/pages/screens/Dashboard/dashboard.dart';
+import 'package:frontend/pages/screens/Home/home.dart';
+import 'package:frontend/pages/screens/Posting/posting.dart';
+import 'package:frontend/pages/screens/Setting/setting.dart';
+import 'package:frontend/widgets/bottom_navigation.dart';
+import 'package:go_router/go_router.dart';
+
+
+class RoutePaths {
+  static const String home = '/home';
+  static const String dashboard = '/dashboard';
+  static const String posting = '/posting';
+  static const String notification = '/notification';
+  static const String chat = '/chat';
+  static const String setting = '/setting';
+  static const String editProfile = '/edit_profile';
+  static const String login = '/login';
+  static const String register = '/register';
+  // static const String confirm = '/confirm';
+  static const String forgotPassword = '/forgot_password';
+  static const String changePassword = '/change_password';
+  //Logged in user
+  static const String confirmLogged = '/confirm';
+  static const String forgotPasswordLogged = '/forgot_password';
+  static const String changePasswordLogged = '/change_password';
 }
 
-dio.interceptors
-    .add(InterceptorsWrapper(onRequest: (options, handler) async {
-if (!options.path.contains('http')) {
-// Cấu hình đường path để call api, thành phần gồm
-// - Enviroment.api: Enpoint api theo môi trường, có thể dùng package dotenv
-// để cấu hình biến môi trường. Ví dụ: https://api-tech.com/v1
-// - options.path: đường dẫn cụ thể API. Ví dụ: "user/user-info"
+final goRouterProvider = Provider<GoRouter>((ref) {
+  final rootNavKey = GlobalKey<NavigatorState>(debugLabel: 'rootNav');
 
-options.path = Enviroment.apiUrl + options.path;
-}
-// Đoạn này dùng để config timeout api từ phía client, tránh việc call 1 API
-// bị lỗi trả response quá lâu.
-options.connectTimeout = 3000;
-options.receiveTimeout = 3000;
-// Gắn access_token vào header, gửi kèm access_token trong header mỗi khi call API
-options.headers['Authorization'] = "Bearer $accessToken";
-}, onResponse: (Response response, handler) {
-// Do something with response data
-return handler.next(response);
-}, onError: (DioError error, handler) async {
-return handler.next(error);
-}));
+  return GoRouter(
+    initialLocation: RoutePaths.home,
+    navigatorKey: rootNavKey,
+    routes: [
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            ScaffoldWithNavBar(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RoutePaths.home,
+                builder: (context, state) => const Home(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RoutePaths.dashboard,
+                builder: (context, state) => const Dashboard(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RoutePaths.posting,
+                builder: (context, state) => const Posting(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RoutePaths.chat,
+                builder: (context, state) => const Chat(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RoutePaths.setting,
+                builder: (context, state) => const Setting(),
+              ),
+            ],
+          ),
+        ],
+      ),
+      GoRoute(
+        path: RoutePaths.login,
+        builder: (context, state) => const Login(),
+      ),
+      GoRoute(
+        path: RoutePaths.register,
+        builder: (context, state) => const Register(),
+      ),
+      GoRoute(
+        path: RoutePaths.forgotPassword,
+        builder: (context, state) => const ForgotPassword(),
+      ),
+      GoRoute(
+        path: RoutePaths.changePassword,
+        builder: (context, state) => const ForgotPassword(),
+      ),
+    ],
+  );
+});

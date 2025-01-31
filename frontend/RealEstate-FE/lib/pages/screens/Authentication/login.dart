@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/pages/screens/forgot_password.dart';
-import 'package:frontend/pages/screens/register.dart';
+import 'package:frontend/pages/routes/routes.dart';
+import 'package:frontend/pages/screens/Authentication/forgot_password.dart';
+import 'package:frontend/pages/screens/Authentication/register.dart';
+import 'package:frontend/pages/screens/Home/home.dart';
 import 'package:frontend/widgets/other_login.dart';
-import '../../../assets/colors/colors.dart';
-import '../../../assets/icons/icons.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../assets/colors/colors.dart';
+import '../../../../assets/icons/icons.dart';
 import 'package:dio/dio.dart';
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -96,7 +99,7 @@ class LoginState extends State<Login> {
                         },
                         child: AppIcons.getIcon(passToggle
                             ? AppIcons.visibility
-                            : AppIcons.visibility_off),
+                            : AppIcons.visibilityOff),
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 10),
@@ -115,11 +118,12 @@ class LoginState extends State<Login> {
                   ),
                   InkWell(
                     onTap: () {
-                      if (loginfield.currentState!.validate()) {
-                        emailController.clear();
-                        passwordController.clear();
-                        request();
-                      }
+                      // if (loginfield.currentState!.validate()) {
+                      //   emailController.clear();
+                      //   passwordController.clear();
+                      //   request();
+                      // }
+                      context.go(RoutePaths.home);
 
                     },
                     child: Container(

@@ -1,0 +1,64 @@
+import 'package:flutter/material.dart';
+
+class SearchWidget extends StatelessWidget {
+  final ValueChanged<String> onSearchChanged;
+  final ValueChanged<String> onTypeChanged;
+
+  const SearchWidget({
+    Key? key,
+    required this.onSearchChanged,
+    required this.onTypeChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(5), 
+      child: Row(
+        children: [
+          Container(
+            height: 50,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(0),
+            ),
+            child: DropdownButton<String>(
+              value: 'Mua',
+              underline: const SizedBox(), 
+              items: const [
+                DropdownMenuItem(value: 'Mua', child: Text('Mua')),
+                DropdownMenuItem(value: 'Bán', child: Text('Bán')),
+              ],
+              onChanged: (value) {
+                if (value != null) {
+                  onTypeChanged(value);
+                }
+              },
+            ),
+          ),
+          Expanded(
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200, 
+                borderRadius: BorderRadius.circular(0),
+              ),
+              child: TextField(
+                onChanged: onSearchChanged,
+                textAlignVertical: TextAlignVertical.center, 
+                decoration: InputDecoration(
+                  hintText: 'Nhập nội dung tìm kiếm...',
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  border: InputBorder.none, 
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
