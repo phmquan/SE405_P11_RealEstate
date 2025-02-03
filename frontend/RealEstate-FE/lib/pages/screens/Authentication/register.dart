@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/assets/colors/colors.dart';
 import 'package:frontend/assets/icons/icons.dart';
-import 'package:frontend/pages/screens/login.dart';
+import 'package:frontend/pages/screens/Authentication/login.dart';
 import 'package:frontend/widgets/other_login.dart';
 
 class Register extends StatefulWidget {
@@ -116,7 +116,7 @@ class RegisterState extends State<Register> {
                         },
                         child: AppIcons.getIcon(passToggle
                             ? AppIcons.visibility
-                            : AppIcons.visibility_off),
+                            : AppIcons.visibilityOff),
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 10),

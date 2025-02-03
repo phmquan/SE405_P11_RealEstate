@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/pages/Interceptor/dio_client.dart';
-import 'package:frontend/pages/screens/forgot_password.dart';
-import 'package:frontend/pages/screens/home.dart';
-import 'package:frontend/pages/screens/register.dart';
+import 'package:frontend/pages/routes/routes.dart';
+import 'package:frontend/pages/screens/Authentication/forgot_password.dart';
+import 'package:frontend/pages/screens/Authentication/register.dart';
+import 'package:frontend/pages/screens/Home/home.dart';
 import 'package:frontend/widgets/other_login.dart';
-import '../../../assets/colors/colors.dart';
-import '../../../assets/icons/icons.dart';
-
+import 'package:go_router/go_router.dart';
+import '../../../../assets/colors/colors.dart';
+import '../../../../assets/icons/icons.dart';
+import 'package:dio/dio.dart';
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -18,7 +19,12 @@ class LoginState extends State<Login> {
   final loginfield = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final dioClient = DioClient();
+  final dio = Dio();
+  void request() async {
+    Response response;
+    response = await dio.post("http://localhost:8080/api/v1/auth/login",data: {'username':'username@gmail.com','password':'123456'});
+    print(response.data.toString());
+  }
   bool passToggle = true;
 
   @override
@@ -93,7 +99,7 @@ class LoginState extends State<Login> {
                         },
                         child: AppIcons.getIcon(passToggle
                             ? AppIcons.visibility
-                            : AppIcons.visibility_off),
+                            : AppIcons.visibilityOff),
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 10),
@@ -111,7 +117,7 @@ class LoginState extends State<Login> {
                     height: 20,
                   ),
                   InkWell(
-                    onTap: () async {
+                    onTap:  () async {
                       if (loginfield.currentState!.validate()) {
                         try {
                           final response = await dioClient.dio.post(
@@ -142,12 +148,7 @@ class LoginState extends State<Login> {
                                 builder: (context) => const Home()),
                           );
                           // Navigate to the next screen or show a success message
-                        } catch (e) {
-                          // Handle login error
-                          print(e);
-                        }
-                      }
-                    },
+                        },
                     child: Container(
                       height: 50,
                       decoration: BoxDecoration(
@@ -179,8 +180,7 @@ class LoginState extends State<Login> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => const Register()),
+                            MaterialPageRoute(builder: (context) => Register()),
                           );
                         },
                         child: const Text(
@@ -206,7 +206,7 @@ class LoginState extends State<Login> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ForgotPassword()),
+                            builder: (context) => ForgotPassword()),
                       );
                     },
                     child: const Text(

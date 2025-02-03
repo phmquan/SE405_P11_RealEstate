@@ -16,7 +16,7 @@ class AppIcons {
   static const IconData logout = Icons.logout;
   static const IconData dropdown = Icons.keyboard_arrow_down_rounded;
   static const IconData visibility = Icons.visibility_outlined;
-  static const IconData visibility_off = Icons.visibility_off_outlined;
+  static const IconData visibilityOff = Icons.visibility_off_outlined;
   static const IconData left_arrow = Icons.arrow_back;
   static const IconData edit = Icons.edit_outlined;
   static const IconData camera = Icons.photo_camera_outlined;
@@ -26,6 +26,11 @@ class AppIcons {
   static const IconData menu = Icons.menu;
   static const IconData share = Icons.emergency_share_outlined;
   static const IconData phone = Icons.phone;
+  static const IconData home = Icons.home;
+  static const IconData list = Icons.list_alt_rounded;
+  static const IconData chat = Icons.chat;
+
+  
   static const double defaultSize = 24.0;
 
   static Icon getIcon(IconData iconData,
