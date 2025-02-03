@@ -1,5 +1,7 @@
 package vn.quanphan.realestate.domain.response;
 
+import java.util.UUID;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -13,6 +15,8 @@ public class ResLoginDTO {
 
     @JsonProperty("access_token")
     private String accessToken;
+    @JsonProperty("refresh_token")
+    private String refreshToken;
 
     private UserLogin userLogin;
 
@@ -22,7 +26,7 @@ public class ResLoginDTO {
     @NoArgsConstructor
     public static class UserLogin {
 
-        private long id;
+        private UUID id;
         private String name;
         private String email;
     }

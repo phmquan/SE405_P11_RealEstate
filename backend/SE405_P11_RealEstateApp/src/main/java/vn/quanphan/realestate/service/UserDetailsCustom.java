@@ -1,6 +1,7 @@
 package vn.quanphan.realestate.service;
 
 import java.util.Collections;
+
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,11 +24,11 @@ public class UserDetailsCustom implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("Username/password khong hop le");
         }
-        return new User(
-                user.getEmail(),
-                user.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
-
+        if (user.getEmailVerified() == false) {
+            throw new UsernameNotFoundException("Email chua duoc xac thuc");
+        } else {
+            return new User(user.getEmail(), user.getPassword(), Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getName())));
+        }
     }
 
 }

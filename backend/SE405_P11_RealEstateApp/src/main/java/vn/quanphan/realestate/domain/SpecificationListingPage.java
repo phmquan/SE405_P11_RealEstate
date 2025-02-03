@@ -1,65 +1,51 @@
 package vn.quanphan.realestate.domain;
 
 import java.time.Instant;
-
-import java.util.UUID;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.quanphan.realestate.util.SecurityUtil;
-import vn.quanphan.realestate.util.constant.Gender;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "specification_listing_page")
+public class SpecificationListingPage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-    private String name;
-    @NotBlank(message = "email không được để trống")
-    private String email;
-
-    private boolean emailVerified;
-    @NotBlank(message = "password không được để trống")
-    private String password;
-    private int age;
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-    private String address;
-    private String phoneNumber;
+    private String pageName;
+    private String fullName;
+    private String brokerArea;
+    private String workingPlaceAdress;
     @Column(columnDefinition = "MEDIUMTEXT")
-    private String refreshToken;
-    private String IdCardNumber;
+    private String description;
+    private List<String> listingSpecificationType;
+
+    @OneToOne
+    @JoinColumn(name = "broker_certification_id")
+    private BrokerCertification brokerCertification;
+
+    @OneToOne(mappedBy = "specificationListingPage")
+    private User user;
+
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
-
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
-
-    @OneToOne
-    @JoinColumn(name = "specification_listing_page_id")
-    private SpecificationListingPage specificationListingPage;
 
     @PrePersist
     public void handleBeforeCreate() {
@@ -75,13 +61,5 @@ public class User {
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
         this.updatedAt = Instant.now();
-    }
-
-    public void setEmailVerified(boolean emailVerified) {
-        this.emailVerified = emailVerified;
-    }
-
-    public boolean getEmailVerified() {
-        return this.emailVerified;
     }
 }

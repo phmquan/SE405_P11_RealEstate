@@ -2,6 +2,7 @@ package vn.quanphan.realestate.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import vn.quanphan.realestate.domain.User;
 import vn.quanphan.realestate.domain.response.ResCreateUserDTO;
+import vn.quanphan.realestate.domain.response.ResRegisterUserDTO;
 import vn.quanphan.realestate.domain.response.ResUpdateUserDTO;
 import vn.quanphan.realestate.domain.response.ResUserDTO;
 import vn.quanphan.realestate.domain.response.ResultPaginationDTO;
@@ -30,11 +32,11 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
-    public void handleDeleteUser(long id) {
+    public void handleDeleteUser(UUID id) {
         this.userRepository.deleteById(id);
     }
 
-    public User fetchUserById(long id) {
+    public User fetchUserById(UUID id) {
         Optional<User> userOptional = this.userRepository.findById(id);
         if (userOptional.isPresent()) {
             return userOptional.get();
@@ -95,6 +97,10 @@ public class UserService {
         return this.userRepository.existsByEmail(email);
     }
 
+    public boolean isPhoneNumberExist(String phoneNumber) {
+        return this.userRepository.existsByPhoneNumber(phoneNumber);
+    }
+
     public ResCreateUserDTO convertToResCreateUserDTO(User user) {
         ResCreateUserDTO res = new ResCreateUserDTO();
         res.setId(user.getId());
@@ -137,10 +143,18 @@ public class UserService {
 
             currentUser.setRefreshToken(token);
             this.userRepository.save(currentUser);
-            {
 
-            }
         }
+    }
+
+    public ResRegisterUserDTO convertToResRegisterUserDTO(User user) {
+        ResRegisterUserDTO res = new ResRegisterUserDTO();
+        res.setId(user.getId());
+        res.setEmail(user.getEmail());
+        res.setPhoneNumber(user.getPhoneNumber());
+        res.setCreatedAt(user.getCreatedAt());
+
+        return res;
     }
 
     public User getUserByRefreshTokenAndEmail(String token, String email) {

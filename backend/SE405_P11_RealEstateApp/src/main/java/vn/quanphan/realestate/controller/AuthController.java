@@ -1,19 +1,30 @@
 package vn.quanphan.realestate.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import vn.quanphan.realestate.domain.User;
 import vn.quanphan.realestate.domain.request.ReqLoginDTO;
+import vn.quanphan.realestate.domain.response.ResCreateUserDTO;
 import vn.quanphan.realestate.domain.response.ResLoginDTO;
+import vn.quanphan.realestate.domain.response.ResRegisterUserDTO;
 import vn.quanphan.realestate.service.UserService;
 import vn.quanphan.realestate.util.SecurityUtil;
 import vn.quanphan.realestate.util.anotation.ApiMessage;
@@ -21,21 +32,15 @@ import vn.quanphan.realestate.util.error.IdInvalidException;
 
 @RestController
 @RequestMapping("/api/v1")
+@AllArgsConstructor
 public class AuthController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final SecurityUtil securityUtil;
     private final UserService userService;
-
+    private final PasswordEncoder passwordEncoder;
     @Value("${quanphan.jwt.refresh-token-validity-in-seconds}")
     private long refreshTokenExpiration;
-
-    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder,
-            SecurityUtil securityUtil, UserService userService) {
-        this.authenticationManagerBuilder = authenticationManagerBuilder;
-        this.securityUtil = securityUtil;
-        this.userService = userService;
-    }
 
     @PostMapping("/auth/login")
     public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO loginDto) {
@@ -66,7 +71,7 @@ public class AuthController {
 
         // create refresh token
         String refresh_token = this.securityUtil.createRefreshToken(loginDto.getUsername(), res);
-
+        res.setRefreshToken(refresh_token);
         // update user
         this.userService.updateUserToken(refresh_token, loginDto.getUsername());
 
@@ -82,6 +87,26 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, resCookies.toString())
                 .body(res);
+    }
+
+    @PostMapping("/auth/register")
+    @ApiMessage("Register")
+    public ResponseEntity<ResRegisterUserDTO> register(@Valid @RequestBody User postmanUser)
+            throws IdInvalidException {
+        boolean isEmailExist = this.userService.isEmailExist(postmanUser.getEmail());
+        boolean isPhoneNumberExist = this.userService.isPhoneNumberExist(postmanUser.getPhoneNumber());
+        if (isEmailExist) {
+            throw new IdInvalidException(
+                    "Email " + postmanUser.getEmail() + "đã tồn tại, vui lòng sử dụng email khác.");
+        }
+        if (isPhoneNumberExist) {
+            throw new IdInvalidException(
+                    "Số điện thoại " + postmanUser.getPhoneNumber() + "đã tồn tại, vui lòng sử dụng số điện thoại khác.");
+        }
+        String hashPassword = this.passwordEncoder.encode(postmanUser.getPassword());
+        postmanUser.setPassword(hashPassword);
+        User currentUser = this.userService.handleCreateUser(postmanUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResRegisterUserDTO(currentUser));
     }
 
     @GetMapping("/auth/account")
@@ -107,8 +132,8 @@ public class AuthController {
     @GetMapping("/auth/refresh")
     @ApiMessage("Get User by refresh token")
     public ResponseEntity<ResLoginDTO> getRefreshToken(
-            @CookieValue(name = "refresh_token", defaultValue = "abc") String refresh_token) throws IdInvalidException {
-        if (refresh_token.equals("abc")) {
+            @CookieValue(name = "refresh_token", defaultValue = "") String refresh_token) throws IdInvalidException {
+        if (refresh_token.equals("")) {
             throw new IdInvalidException("Bạn không có refresh token ở cookie");
         }
         // check valid
@@ -161,7 +186,7 @@ public class AuthController {
     public ResponseEntity<Void> logout() throws IdInvalidException {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
         if (email.isEmpty()) {
-            throw new IdInvalidException("Access token khong hop le");
+            throw new IdInvalidException("Access token không hợp lệ");
         }
 
         this.userService.updateUserToken(null, email);

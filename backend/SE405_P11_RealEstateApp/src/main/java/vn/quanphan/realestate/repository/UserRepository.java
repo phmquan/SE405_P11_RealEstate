@@ -1,6 +1,7 @@
 package vn.quanphan.realestate.repository;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import vn.quanphan.realestate.domain.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
+public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificationExecutor<User> {
 
     List<User> findAll();
 
@@ -18,4 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     Boolean existsByEmail(String email);
 
     User findByRefreshTokenAndEmail(String token, String email);
+
+    boolean existsByPhoneNumber(String phoneNumber);
 }

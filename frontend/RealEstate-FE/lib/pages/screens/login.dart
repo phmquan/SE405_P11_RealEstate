@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/Interceptor/dio_client.dart';
 import 'package:frontend/pages/screens/forgot_password.dart';
+import 'package:frontend/pages/screens/home.dart';
 import 'package:frontend/pages/screens/register.dart';
 import 'package:frontend/widgets/other_login.dart';
 import '../../../assets/colors/colors.dart';
 import '../../../assets/icons/icons.dart';
-import 'package:dio/dio.dart';
+
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -16,12 +18,7 @@ class LoginState extends State<Login> {
   final loginfield = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final dio = Dio();
-  void request() async {
-    Response response;
-    response = await dio.post("http://localhost:8080/api/v1/auth/login",data: {'username':'username@gmail.com','password':'123456'});
-    print(response.data.toString());
-  }
+  final dioClient = DioClient();
   bool passToggle = true;
 
   @override
@@ -114,13 +111,42 @@ class LoginState extends State<Login> {
                     height: 20,
                   ),
                   InkWell(
-                    onTap: () {
+                    onTap: () async {
                       if (loginfield.currentState!.validate()) {
-                        emailController.clear();
-                        passwordController.clear();
-                        request();
-                      }
+                        try {
+                          final response = await dioClient.dio.post(
+                            '/api/v1/auth/login',
+                            data: {
+                              'username': emailController.text,
+                              'password': passwordController.text,
+                            },
+                          );
 
+                          final accessToken = response.data['accessToken'];
+                          final refreshToken = response.data['refreshToken'];
+
+                          await dioClient.secureStorage.write(
+                            key: 'accessToken',
+                            value: accessToken,
+                          );
+                          await dioClient.secureStorage.write(
+                            key: 'refreshToken',
+                            value: refreshToken,
+                          );
+
+                          emailController.clear();
+                          passwordController.clear();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Home()),
+                          );
+                          // Navigate to the next screen or show a success message
+                        } catch (e) {
+                          // Handle login error
+                          print(e);
+                        }
+                      }
                     },
                     child: Container(
                       height: 50,
@@ -153,7 +179,8 @@ class LoginState extends State<Login> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Register()),
+                            MaterialPageRoute(
+                                builder: (context) => const Register()),
                           );
                         },
                         child: const Text(
@@ -179,7 +206,7 @@ class LoginState extends State<Login> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ForgotPassword()),
+                            builder: (context) => const ForgotPassword()),
                       );
                     },
                     child: const Text(
