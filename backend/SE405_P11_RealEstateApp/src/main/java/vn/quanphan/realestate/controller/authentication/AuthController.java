@@ -1,4 +1,4 @@
-package vn.quanphan.realestate.controller;
+package vn.quanphan.realestate.controller.authentication;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;

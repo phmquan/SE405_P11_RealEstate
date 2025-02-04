@@ -56,6 +56,7 @@ public class Listing {
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
+
     @Valid
     @OneToOne
     @JoinColumn(name = "property_id", nullable = false)
