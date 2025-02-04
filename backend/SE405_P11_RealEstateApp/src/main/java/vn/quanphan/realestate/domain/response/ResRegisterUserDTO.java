@@ -8,9 +8,8 @@ import java.util.UUID;
 public class ResRegisterUserDTO {
 
     private UUID id;
-    private String fullName;
+    private String name;
     private String email;
     private String phoneNumber;
     private Instant createdAt;
-
 }

@@ -1,8 +1,9 @@
 package vn.quanphan.realestate.domain;
 
 import java.time.Instant;
-
 import java.util.UUID;
+
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,6 +20,7 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+
 import lombok.Setter;
 import vn.quanphan.realestate.util.SecurityUtil;
 import vn.quanphan.realestate.util.constant.Gender;
@@ -37,7 +39,9 @@ public class User {
     @NotBlank(message = "email không được để trống")
     private String email;
 
+    @Column(columnDefinition = "TINYINT(1)")
     private boolean emailVerified;
+
     @NotBlank(message = "password không được để trống")
     private String password;
     private int age;

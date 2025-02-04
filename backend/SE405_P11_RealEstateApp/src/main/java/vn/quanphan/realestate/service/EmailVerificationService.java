@@ -2,6 +2,8 @@ package vn.quanphan.realestate.service;
 
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.GONE;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -13,9 +15,6 @@ import lombok.RequiredArgsConstructor;
 import vn.quanphan.realestate.domain.User;
 import vn.quanphan.realestate.repository.UserRepository;
 import vn.quanphan.realestate.util.error.IdInvalidException;
-
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.GONE;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +32,7 @@ public class EmailVerificationService {
 
         // Localhost URL with userId and OTP token
         final var emailVerificationUrl
-                = "http://localhost:8080/api/auth/email/verify?uid=%s&t=%s"
+                = "http://localhost:8080/api/v1/auth/email/verify?uid=%s&t=%s"
                         .formatted(userId, token);
         final var emailText
                 = "Click the link to verify your email: " + emailVerificationUrl;
@@ -57,7 +56,7 @@ public class EmailVerificationService {
     }
 
     @Transactional
-    public User verifyEmail(UUID userId, String token) {
+    public void verifyEmail(UUID userId, String token) {
         if (!otpService.isOtpValid(userId, token)) {
             throw new ResponseStatusException(BAD_REQUEST,
                     "Token invalid or expired");
@@ -76,7 +75,7 @@ public class EmailVerificationService {
 
         user.setEmailVerified(true);
 
-        return user;
+        // return user;
     }
 
 }

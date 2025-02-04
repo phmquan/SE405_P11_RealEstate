@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/Interceptor/dio_client.dart';
 import 'package:frontend/pages/routes/routes.dart';
 import 'package:frontend/pages/screens/Authentication/forgot_password.dart';
 import 'package:frontend/pages/screens/Authentication/register.dart';
@@ -8,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../assets/colors/colors.dart';
 import '../../../../assets/icons/icons.dart';
 import 'package:dio/dio.dart';
+
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -20,11 +22,7 @@ class LoginState extends State<Login> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final dio = Dio();
-  void request() async {
-    Response response;
-    response = await dio.post("http://localhost:8080/api/v1/auth/login",data: {'username':'username@gmail.com','password':'123456'});
-    print(response.data.toString());
-  }
+  final dioClient = DioClient();
   bool passToggle = true;
 
   @override
@@ -117,7 +115,7 @@ class LoginState extends State<Login> {
                     height: 20,
                   ),
                   InkWell(
-                    onTap:  () async {
+                    onTap: () async {
                       if (loginfield.currentState!.validate()) {
                         try {
                           final response = await dioClient.dio.post(
@@ -148,7 +146,11 @@ class LoginState extends State<Login> {
                                 builder: (context) => const Home()),
                           );
                           // Navigate to the next screen or show a success message
-                        },
+                        } catch (e) {
+                          // Show an error message
+                        }
+                      }
+                    },
                     child: Container(
                       height: 50,
                       decoration: BoxDecoration(

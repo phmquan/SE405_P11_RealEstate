@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -35,6 +36,7 @@ public class Role {
     @NotBlank(message = "name không được để trống")
     private String name;
     private String description;
+    @Column(columnDefinition = "TINYINT(1)")
     private boolean active;
     private Instant createdAt;
     private Instant updatedAt;

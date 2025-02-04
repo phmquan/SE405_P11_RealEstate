@@ -19,12 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import vn.quanphan.realestate.domain.User;
 import vn.quanphan.realestate.domain.request.ReqLoginDTO;
-import vn.quanphan.realestate.domain.response.ResCreateUserDTO;
 import vn.quanphan.realestate.domain.response.ResLoginDTO;
 import vn.quanphan.realestate.domain.response.ResRegisterUserDTO;
+import vn.quanphan.realestate.service.EmailVerificationService;
 import vn.quanphan.realestate.service.UserService;
 import vn.quanphan.realestate.util.SecurityUtil;
 import vn.quanphan.realestate.util.anotation.ApiMessage;
@@ -32,13 +31,26 @@ import vn.quanphan.realestate.util.error.IdInvalidException;
 
 @RestController
 @RequestMapping("/api/v1")
-@AllArgsConstructor
+
 public class AuthController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final SecurityUtil securityUtil;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final EmailVerificationService emailVerificationService;
+
+    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder,
+            SecurityUtil securityUtil,
+            UserService userService,
+            PasswordEncoder passwordEncoder,
+            EmailVerificationService emailVerificationService) {
+        this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.securityUtil = securityUtil;
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+        this.emailVerificationService = emailVerificationService;
+    }
     @Value("${quanphan.jwt.refresh-token-validity-in-seconds}")
     private long refreshTokenExpiration;
 
@@ -105,7 +117,9 @@ public class AuthController {
         }
         String hashPassword = this.passwordEncoder.encode(postmanUser.getPassword());
         postmanUser.setPassword(hashPassword);
+        postmanUser.setRole(this.userService.getRoleByName("USER"));
         User currentUser = this.userService.handleCreateUser(postmanUser);
+        emailVerificationService.sendVerificationToken(currentUser.getId(), currentUser.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResRegisterUserDTO(currentUser));
     }
 

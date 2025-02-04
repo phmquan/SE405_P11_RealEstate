@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import vn.quanphan.realestate.domain.Role;
 import vn.quanphan.realestate.domain.User;
 import vn.quanphan.realestate.domain.response.ResCreateUserDTO;
 import vn.quanphan.realestate.domain.response.ResRegisterUserDTO;
@@ -17,15 +18,18 @@ import vn.quanphan.realestate.domain.response.ResUpdateUserDTO;
 import vn.quanphan.realestate.domain.response.ResUserDTO;
 import vn.quanphan.realestate.domain.response.ResultPaginationDTO;
 import vn.quanphan.realestate.domain.response.ResultPaginationDTO.Meta;
+import vn.quanphan.realestate.repository.RoleRepository;
 import vn.quanphan.realestate.repository.UserRepository;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     public User handleCreateUser(User user) {
@@ -151,6 +155,7 @@ public class UserService {
         ResRegisterUserDTO res = new ResRegisterUserDTO();
         res.setId(user.getId());
         res.setEmail(user.getEmail());
+        res.setName(user.getName());
         res.setPhoneNumber(user.getPhoneNumber());
         res.setCreatedAt(user.getCreatedAt());
 
@@ -159,5 +164,9 @@ public class UserService {
 
     public User getUserByRefreshTokenAndEmail(String token, String email) {
         return this.userRepository.findByRefreshTokenAndEmail(token, email);
+    }
+
+    public Role getRoleByName(String string) {
+        return this.roleRepository.findByName(string);
     }
 }

@@ -16,15 +16,12 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final goRouter = ref.watch(goRouterProvider);
-    
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: goRouter,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          primary: AppColors.blue,
-          seedColor: AppColors.lightBlue
-        ),
+            primary: AppColors.blue, seedColor: AppColors.lightBlue),
         scaffoldBackgroundColor: AppColors.white,
         useMaterial3: true,
       ),

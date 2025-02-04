@@ -2,6 +2,7 @@ package vn.quanphan.realestate.service;
 
 import java.util.Collections;
 
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,10 +23,10 @@ public class UserDetailsCustom implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         vn.quanphan.realestate.domain.User user = this.userService.handleGetUserByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException("Username/password khong hop le");
+            throw new BadCredentialsException("Username/password khong hop le");
         }
         if (user.getEmailVerified() == false) {
-            throw new UsernameNotFoundException("Email chua duoc xac thuc");
+            throw new BadCredentialsException("Email chua duoc xac thuc");
         } else {
             return new User(user.getEmail(), user.getPassword(), Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getName())));
         }
