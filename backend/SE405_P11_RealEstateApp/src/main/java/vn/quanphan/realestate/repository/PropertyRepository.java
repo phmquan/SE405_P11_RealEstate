@@ -7,6 +7,4 @@ import vn.quanphan.realestate.domain.Property;
 
 public interface PropertyRepository extends JpaRepository<Property, Long>, JpaSpecificationExecutor<Property> {
 
-    Property findByName(String name);
-
 }

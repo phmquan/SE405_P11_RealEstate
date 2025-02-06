@@ -27,8 +27,8 @@ public class ResLoginDTO {
     public static class UserLogin {
 
         private UUID id;
-        private String name;
         private String email;
+        private String name;
     }
 
     @Getter

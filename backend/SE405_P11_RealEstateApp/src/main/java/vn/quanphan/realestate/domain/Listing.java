@@ -18,7 +18,9 @@ import jakarta.persistence.Table;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import vn.quanphan.realestate.util.SecurityUtil;
 import vn.quanphan.realestate.util.constant.ListingStatus;
@@ -27,6 +29,8 @@ import vn.quanphan.realestate.util.constant.ListingStatus;
 @Table(name = "listings")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Listing {
 
     @Id
@@ -34,7 +38,7 @@ public class Listing {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "agency_id", nullable = false)  // Foreign key for agency
+    @JoinColumn(name = "user_id", nullable = false)  // Foreign key for agency
     private User user;
 
     private String listingType; // sale, rent
@@ -47,9 +51,9 @@ public class Listing {
     @Size(min = 20, max = 1500, message = "Mô tả phải có ít nhất 20 kí tự")
     @Column(columnDefinition = "MEDIUMTEXT")
     private String listingDescription;
-
-    private String propertyType; // House, Apartment, Land
-
+    @NotBlank(message = "Loại bất động sản không được để trống")
+    private String propertyType;
+    // House, Apartment, Land
     @Enumerated(EnumType.STRING)
     private ListingStatus status;
     private Instant createdAt;

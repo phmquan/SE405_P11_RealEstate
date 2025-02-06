@@ -99,6 +99,17 @@ public class SecurityUtil {
         }
     }
 
+    public Jwt checkValidAccessToken(String token) {
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(
+                this.getSecretKey()).macAlgorithm(SecurityUtil.JWT_ALGORITHM).build();
+        try {
+            return jwtDecoder.decode(token);
+        } catch (Exception e) {
+            System.out.println(">>> Refresh Token error: " + e.getMessage());
+            throw e;
+        }
+    }
+
     /**
      * Get the login of the current user.
      *

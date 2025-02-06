@@ -1,11 +1,19 @@
 package vn.quanphan.realestate.domain;
 
+import java.util.List;
+
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.RequiredArgsConstructor;
 
 @Entity
 @lombok.Getter
 @lombok.Setter
+@RequiredArgsConstructor
+@DiscriminatorValue("apartment")
 public class Apartment extends Property {
 
     private String apartmentCode; // Mã căn hộ
@@ -19,4 +27,5 @@ public class Apartment extends Property {
     private double apartmentRoom; // Số phòng ngủ
     private double apartmentToilet; // Số phòng vệ sinh
     private String apartmentDirection; // Hướng căn hộ
+
 }

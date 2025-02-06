@@ -7,6 +7,4 @@ import vn.quanphan.realestate.domain.Permission;
 
 public interface PermissionRepository extends JpaRepository<Permission, Long>, JpaSpecificationExecutor<Permission> {
 
-    Permission findByName(String name);
-
 }

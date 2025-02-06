@@ -1,12 +1,16 @@
 package vn.quanphan.realestate.domain;
 
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 
 @Entity
 @lombok.Getter
 @lombok.Setter
+@RequiredArgsConstructor
+@DiscriminatorValue("house")
 public class House extends Property {
 
     @NotBlank(message = "Loại nhà không được để trống")

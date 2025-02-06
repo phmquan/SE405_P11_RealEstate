@@ -169,4 +169,8 @@ public class UserService {
     public Role getRoleByName(String string) {
         return this.roleRepository.findByName(string);
     }
+
+    public User getUserByEmail(String email) {
+        return this.userRepository.findByEmail(email);
+    }
 }
