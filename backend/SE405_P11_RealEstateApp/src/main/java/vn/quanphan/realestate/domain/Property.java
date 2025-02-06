@@ -47,7 +47,7 @@ public abstract class Property {
     private double propertyWidth;
 
     @NotNull(message = "Diện tích không được để trống")
-    private Double propertyArea;
+    private double propertyArea;
 
     @NotBlank(message = "Thông tin pháp lý bất động sản không được để trống")
     private String legalDocument; // Đã có sổ đỏ, chưa có sổ đỏ

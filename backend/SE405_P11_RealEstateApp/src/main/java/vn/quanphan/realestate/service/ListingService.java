@@ -187,11 +187,79 @@ public class ListingService {
         }
     }
 
+    public PropertyDTO createPropertyDTO(Listing dto) {
+        switch (dto.getPropertyType().toLowerCase()) {
+            case "house" -> {
+                if (dto.getProperty() instanceof House houseDTO) {
+                    HouseDTO result = new HouseDTO();
+                    result.setAddress(houseDTO.getAddress());
+                    result.setDistrict(houseDTO.getDistrict());
+                    result.setPropertyLength(Double.toString(houseDTO.getPropertyLength()));
+                    result.setPropertyWidth(Double.toString(houseDTO.getPropertyWidth()));
+                    result.setPropertyArea(Double.toString(houseDTO.getPropertyArea()));
+                    result.setLegalDocument(houseDTO.getLegalDocument());
+                    result.setPropertyPrice(houseDTO.getPropertyPrice());
+                    result.setPropertyImages(houseDTO.getPropertyImages());
+                    result.setHouseType(houseDTO.getHouseType());
+                    result.setHouseRoom(Double.toString(houseDTO.getHouseRoom()));
+                    result.setHouseToilet(Double.toString(houseDTO.getHouseToilet()));
+                    result.setHouseDirection(houseDTO.getHouseDirection());
+                    return result;
+                }
+                throw new IllegalArgumentException("Invalid HouseDTO provided");
+            }
+
+            case "land" -> {
+                if (dto.getProperty() instanceof Land landDTO) {
+                    LandDTO result = new LandDTO();
+                    result.setAddress(landDTO.getAddress());
+                    result.setDistrict(landDTO.getDistrict());
+                    result.setPropertyLength(Double.toString(landDTO.getPropertyLength()));
+                    result.setPropertyWidth(Double.toString(landDTO.getPropertyWidth()));
+                    result.setPropertyArea(Double.toString(landDTO.getPropertyArea()));
+                    result.setLegalDocument(landDTO.getLegalDocument());
+                    result.setPropertyPrice(landDTO.getPropertyPrice());
+                    result.setPropertyImages(landDTO.getPropertyImages());
+                    result.setLandType(landDTO.getLandType());
+                    result.setLandDirection(landDTO.getLandDirection());
+                    return result;
+                }
+                throw new IllegalArgumentException("Invalid LandDTO provided");
+            }
+
+            case "apartment" -> {
+                if (dto.getProperty() instanceof Apartment apartmentDTO) {
+                    ApartmentDTO result = new ApartmentDTO();
+                    result.setAddress(apartmentDTO.getAddress());
+                    result.setDistrict(apartmentDTO.getDistrict());
+                    result.setPropertyLength(Double.toString(apartmentDTO.getPropertyLength()));
+                    result.setPropertyWidth(Double.toString(apartmentDTO.getPropertyWidth()));
+                    result.setPropertyArea(Double.toString(apartmentDTO.getPropertyArea()));
+                    result.setLegalDocument(apartmentDTO.getLegalDocument());
+                    result.setPropertyPrice(apartmentDTO.getPropertyPrice());
+                    result.setPropertyImages(apartmentDTO.getPropertyImages());
+                    result.setApartmentCode(apartmentDTO.getApartmentCode());
+                    result.setApartmentFloor(apartmentDTO.getApartmentFloor());
+                    result.setApartmentBlock(apartmentDTO.getApartmentBlock());
+                    result.setApartmentType(apartmentDTO.getApartmentType());
+                    result.setApartmentRoom(Double.toString(apartmentDTO.getApartmentRoom()));
+                    result.setApartmentToilet(Double.toString(apartmentDTO.getApartmentToilet()));
+                    result.setApartmentDirection(apartmentDTO.getApartmentDirection());
+                    return result;
+                }
+                throw new IllegalArgumentException("Invalid ApartmentDTO provided");
+            }
+
+            default ->
+                throw new IllegalArgumentException("Unsupported property type: " + dto.getPropertyType());
+        }
+    }
+
     public long countListingByUser(User currentUser) {
         return listingRepository.countByUser(currentUser);
     }
 
-    private ResListingDTO convertToResListingDTO(Listing save, ReqListingDTO listingDTO) {
+    public ResListingDTO convertToResListingDTO(Listing save, ReqListingDTO listingDTO) {
         ResListingDTO res = new ResListingDTO();
         res.setId(save.getId());
         res.setListingType(save.getListingType());
@@ -201,6 +269,19 @@ public class ListingService {
         res.setListingStatus(save.getStatus().toString());
         res.setCreatedAt(save.getCreatedAt());
         res.setProperty(createPropertyDTO(listingDTO));
+        return res;
+    }
+
+    public ResListingDTO convertToResListingDTO(Listing save) {
+        ResListingDTO res = new ResListingDTO();
+        res.setId(save.getId());
+        res.setListingType(save.getListingType());
+        res.setListingTitle(save.getListingTitle());
+        res.setListingDescription(save.getListingDescription());
+        res.setPropertyType(save.getPropertyType());
+        res.setListingStatus(save.getStatus().toString());
+        res.setCreatedAt(save.getCreatedAt());
+        res.setProperty(createPropertyDTO(save));
         return res;
     }
 
