@@ -46,10 +46,13 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers("/", "/api/v1/auth/login", "/api/v1/auth/refresh", "/api/v1/auth/register")
+                                .requestMatchers("/", "/api/v1/auth/login", "/api/v1/auth/refresh", "/api/v1/auth/register", "/api/v1/auth/email/verify")
                                 .permitAll()
+                                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                                 .anyRequest().permitAll())
-                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
+                .oauth2ResourceServer(oauth2 -> oauth2
+                .jwt(jwt -> jwt
+                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 .authenticationEntryPoint(customAuthenticationEntryPoint))
                 // .exceptionHandling(
                 // exceptions -> exceptions
@@ -65,8 +68,10 @@ public class SecurityConfiguration {
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        grantedAuthoritiesConverter.setAuthorityPrefix("");
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("permission");
+        // Giả sử JWT chứa role trong claim "roles"
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
+        // Thêm tiền tố "ROLE_" cho mỗi quyền
+        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);

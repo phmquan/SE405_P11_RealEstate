@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import vn.quanphan.realestate.domain.response.ResListingDTO;
 import vn.quanphan.realestate.repository.ListingRepository;
 import vn.quanphan.realestate.repository.PropertyRepository;
 import vn.quanphan.realestate.util.constant.ListingStatus;
+import vn.quanphan.realestate.util.specification.ListingSpecification;
 
 @Service
 @RequiredArgsConstructor
@@ -30,9 +32,11 @@ public class ListingService {
     private final ListingRepository listingRepository;
     private final PropertyRepository propertyRepository;
 
-    public List<Listing> getAllListing(Pageable pageable) {
-        Page<Listing> page = listingRepository.findAll(pageable);
-        return page.getContent();
+    public List<Listing> findListings(String listingType, String propertyType, Double minPrice, Double maxPrice, Pageable pageable) {
+        Specification<Listing> spec = Specification.where(ListingSpecification.hasListingType(listingType))
+                .and(ListingSpecification.hasPropertyType(propertyType))
+                .and(ListingSpecification.hasPriceBetween(minPrice, maxPrice));
+        return listingRepository.findAll(spec, pageable).getContent();
     }
 
     public ResListingDTO createListing(ReqListingDTO listingDTO, User user) {
@@ -62,7 +66,7 @@ public class ListingService {
                     house.setPropertyWidth(Double.parseDouble(houseDTO.getPropertyWidth()));
                     house.setPropertyArea(Double.parseDouble(houseDTO.getPropertyArea()));
                     house.setLegalDocument(houseDTO.getLegalDocument());
-                    house.setPropertyPrice(houseDTO.getPropertyPrice());
+                    house.setPropertyPrice(Double.parseDouble(houseDTO.getPropertyPrice()));
                     house.setPropertyImages(houseDTO.getPropertyImages());
                     house.setHouseType(houseDTO.getHouseType());
                     house.setHouseRoom(Double.parseDouble(houseDTO.getHouseRoom()));
@@ -82,7 +86,7 @@ public class ListingService {
                     land.setPropertyWidth(Double.parseDouble(landDTO.getPropertyWidth()));
                     land.setPropertyArea(Double.parseDouble(landDTO.getPropertyArea()));
                     land.setLegalDocument(landDTO.getLegalDocument());
-                    land.setPropertyPrice(landDTO.getPropertyPrice());
+                    land.setPropertyPrice(Double.parseDouble(landDTO.getPropertyPrice()));
                     land.setPropertyImages(landDTO.getPropertyImages());
                     land.setLandType(landDTO.getLandType());
                     land.setLandDirection(landDTO.getLandDirection());
@@ -100,7 +104,7 @@ public class ListingService {
                     apartment.setPropertyWidth(Double.parseDouble(apartmentDTO.getPropertyWidth()));
                     apartment.setPropertyArea(Double.parseDouble(apartmentDTO.getPropertyArea()));
                     apartment.setLegalDocument(apartmentDTO.getLegalDocument());
-                    apartment.setPropertyPrice(apartmentDTO.getPropertyPrice());
+                    apartment.setPropertyPrice(Double.parseDouble(apartmentDTO.getPropertyPrice()));
                     apartment.setPropertyImages(apartmentDTO.getPropertyImages());
                     apartment.setApartmentCode(apartmentDTO.getApartmentCode());
                     apartment.setApartmentFloor(apartmentDTO.getApartmentFloor());
@@ -198,7 +202,7 @@ public class ListingService {
                     result.setPropertyWidth(Double.toString(houseDTO.getPropertyWidth()));
                     result.setPropertyArea(Double.toString(houseDTO.getPropertyArea()));
                     result.setLegalDocument(houseDTO.getLegalDocument());
-                    result.setPropertyPrice(houseDTO.getPropertyPrice());
+                    result.setPropertyPrice(Double.toString(houseDTO.getPropertyPrice()));
                     result.setPropertyImages(houseDTO.getPropertyImages());
                     result.setHouseType(houseDTO.getHouseType());
                     result.setHouseRoom(Double.toString(houseDTO.getHouseRoom()));
@@ -218,7 +222,7 @@ public class ListingService {
                     result.setPropertyWidth(Double.toString(landDTO.getPropertyWidth()));
                     result.setPropertyArea(Double.toString(landDTO.getPropertyArea()));
                     result.setLegalDocument(landDTO.getLegalDocument());
-                    result.setPropertyPrice(landDTO.getPropertyPrice());
+                    result.setPropertyPrice(Double.toString(landDTO.getPropertyPrice()));
                     result.setPropertyImages(landDTO.getPropertyImages());
                     result.setLandType(landDTO.getLandType());
                     result.setLandDirection(landDTO.getLandDirection());
@@ -236,7 +240,7 @@ public class ListingService {
                     result.setPropertyWidth(Double.toString(apartmentDTO.getPropertyWidth()));
                     result.setPropertyArea(Double.toString(apartmentDTO.getPropertyArea()));
                     result.setLegalDocument(apartmentDTO.getLegalDocument());
-                    result.setPropertyPrice(apartmentDTO.getPropertyPrice());
+                    result.setPropertyPrice(Double.toString(apartmentDTO.getPropertyPrice()));
                     result.setPropertyImages(apartmentDTO.getPropertyImages());
                     result.setApartmentCode(apartmentDTO.getApartmentCode());
                     result.setApartmentFloor(apartmentDTO.getApartmentFloor());
@@ -285,4 +289,20 @@ public class ListingService {
         return res;
     }
 
+    public Listing getListingById(String id) {
+        return listingRepository.findById(Long.parseLong(id)).orElse(null);
+
+    }
+
+    public List<Listing> getListingByStatus(String status, Pageable pageable) {
+        Page<Listing> page = listingRepository.findByStatus(ListingStatus.valueOf(status), pageable);
+        return page.getContent();
+    }
+
+    public List<Listing> findListings(String listingType, String propertyType, Double minPrice, Double maxPrice) {
+        Specification<Listing> spec = Specification.where(ListingSpecification.hasListingType(listingType))
+                .and(ListingSpecification.hasPropertyType(propertyType))
+                .and(ListingSpecification.hasPriceBetween(minPrice, maxPrice));
+        return listingRepository.findAll(spec);
+    }
 }

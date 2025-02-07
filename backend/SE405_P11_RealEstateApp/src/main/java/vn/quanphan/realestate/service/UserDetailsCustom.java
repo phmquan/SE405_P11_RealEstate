@@ -23,13 +23,26 @@ public class UserDetailsCustom implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         vn.quanphan.realestate.domain.User user = this.userService.handleGetUserByUsername(username);
         if (user == null) {
-            throw new BadCredentialsException("Username/password khong hop le");
+            throw new BadCredentialsException("Username/password không hợp lệ");
         }
-        if (user.getEmailVerified() == false) {
-            throw new BadCredentialsException("Email chua duoc xac thuc");
-        } else {
-            return new User(user.getEmail(), user.getPassword(), Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getName())));
+        if (!user.getEmailVerified()) {
+            throw new BadCredentialsException("Email chưa được xác thực");
         }
+
+        // Lấy tên role từ user
+        String role = user.getRole().getName();
+
+        // Kiểm tra và thêm tiền tố "ROLE_" nếu cần
+        if (!role.startsWith("ROLE_")) {
+            role = "ROLE_" + role;
+        }
+
+        // Tạo đối tượng UserDetails với quyền được định nghĩa đúng
+        return new User(
+                user.getEmail(),
+                user.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority(role))
+        );
     }
 
 }

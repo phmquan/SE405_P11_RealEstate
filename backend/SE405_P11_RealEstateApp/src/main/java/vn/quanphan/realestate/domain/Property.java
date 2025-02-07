@@ -52,8 +52,8 @@ public abstract class Property {
     @NotBlank(message = "Thông tin pháp lý bất động sản không được để trống")
     private String legalDocument; // Đã có sổ đỏ, chưa có sổ đỏ
 
-    @NotBlank(message = "Giá không được để trống")
-    private String propertyPrice;
+    @NotNull(message = "Giá bất động sản không được để trống")
+    private double propertyPrice;
 
     @ElementCollection
     @CollectionTable(name = "property_images", joinColumns = @JoinColumn(name = "user_id"))

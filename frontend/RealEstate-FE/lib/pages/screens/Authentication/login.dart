@@ -138,8 +138,6 @@ class LoginState extends State<Login> {
                             value: refreshToken,
                           );
 
-                          emailController.clear();
-                          passwordController.clear();
                           Navigator.push(
                             context,
                             MaterialPageRoute(

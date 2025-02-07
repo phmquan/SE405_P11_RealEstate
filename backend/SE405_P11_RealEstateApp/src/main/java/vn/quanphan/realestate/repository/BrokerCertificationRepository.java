@@ -7,4 +7,5 @@ import vn.quanphan.realestate.domain.BrokerCertification;
 
 public interface BrokerCertificationRepository extends JpaRepository<BrokerCertification, Long>, JpaSpecificationExecutor<BrokerCertification> {
 
+    boolean existsByNameOnCertificationAndCertificationNumberAndCertificationAuthority(String nameOnCertification, String certificationNumber, String certificationAuthority);
 }

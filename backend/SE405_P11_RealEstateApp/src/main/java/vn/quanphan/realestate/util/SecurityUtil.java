@@ -15,9 +15,11 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,24 +47,23 @@ public class SecurityUtil {
         Instant now = Instant.now();
         Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
 
-        // hardcode permission (for testing)
-        List<String> listAuthority = new ArrayList<String>();
+        // Nếu role trong dto có tiền tố "ROLE_" thì bỏ đi,
+        // vì JwtGrantedAuthoritiesConverter sẽ tự động thêm tiền tố "ROLE_"
+        String role = dto.getRole();
+        if (role.startsWith("ROLE_")) {
+            role = role.substring("ROLE_".length());
+        }
 
-        listAuthority.add("ROLE_USER_CREATE");
-        listAuthority.add("ROLE_USER_UPDATE");
-
-        // @formatter:off
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(email)
                 .claim("user", dto)
-                .claim("permission", listAuthority)
+                .claim("roles", Collections.singletonList(role)) // thêm role động vào claim
                 .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
-
     }
 
     public String createRefreshToken(String email, ResLoginDTO dto) {

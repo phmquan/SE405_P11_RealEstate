@@ -1,5 +1,7 @@
 package vn.quanphan.realestate.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,6 +33,7 @@ public class BrokerCertification {
     @NotBlank(message = "Cơ quan cấp chứng chỉ không được để trống")
     private String certificationAuthority;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "brokerCertification")
     private SpecificationListingPage specificationListingPage;
 

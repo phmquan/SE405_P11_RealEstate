@@ -13,9 +13,12 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.quanphan.realestate.util.SecurityUtil;
+import vn.quanphan.realestate.util.constant.SpecificationListingPageStatus;
 
 @Getter
 @Setter
@@ -35,13 +38,18 @@ public class SpecificationListingPage {
     private String description;
     private List<String> listingSpecificationType;
 
+    @Valid
     @OneToOne
     @JoinColumn(name = "broker_certification_id")
     private BrokerCertification brokerCertification;
 
     @OneToOne(mappedBy = "specificationListingPage")
     private User user;
-
+    private SpecificationListingPageStatus status;
+    @NotBlank(message = "Hình đại diện không được để trống")
+    private String avatar;
+    @NotBlank(message = "Ảnh bìa không được để trống")
+    private String coverImage;
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;

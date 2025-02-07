@@ -73,7 +73,8 @@ public class AuthController {
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                     currentUserDB.getId(),
                     currentUserDB.getEmail(),
-                    currentUserDB.getName());
+                    currentUserDB.getName(),
+                    currentUserDB.getRole().getName());
             res.setUserLogin(userLogin);
         }
 
@@ -123,6 +124,28 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResRegisterUserDTO(currentUser));
     }
 
+    @PostMapping("/auth/registerAdmin")
+    @ApiMessage("Register")
+    public ResponseEntity<ResRegisterUserDTO> registerAdmin(@Valid @RequestBody User postmanUser)
+            throws IdInvalidException {
+        boolean isEmailExist = this.userService.isEmailExist(postmanUser.getEmail());
+        boolean isPhoneNumberExist = this.userService.isPhoneNumberExist(postmanUser.getPhoneNumber());
+        if (isEmailExist) {
+            throw new IdInvalidException(
+                    "Email " + postmanUser.getEmail() + "đã tồn tại, vui lòng sử dụng email khác.");
+        }
+        if (isPhoneNumberExist) {
+            throw new IdInvalidException(
+                    "Số điện thoại " + postmanUser.getPhoneNumber() + "đã tồn tại, vui lòng sử dụng số điện thoại khác.");
+        }
+        String hashPassword = this.passwordEncoder.encode(postmanUser.getPassword());
+        postmanUser.setPassword(hashPassword);
+        postmanUser.setRole(this.userService.getRoleByName("ADMIN"));
+        User currentUser = this.userService.handleCreateUser(postmanUser);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResRegisterUserDTO(currentUser));
+    }
+
     @GetMapping("/auth/account")
     @ApiMessage("fetch account")
     public ResponseEntity<ResLoginDTO.UserGetAccount> getAccount() {
@@ -167,7 +190,8 @@ public class AuthController {
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                     currentUserDB.getId(),
                     currentUserDB.getEmail(),
-                    currentUserDB.getName());
+                    currentUserDB.getName(),
+                    currentUserDB.getRole().getName());
             res.setUserLogin(userLogin);
         }
 
