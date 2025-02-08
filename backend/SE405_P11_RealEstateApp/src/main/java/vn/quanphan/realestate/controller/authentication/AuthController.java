@@ -27,6 +27,7 @@ import vn.quanphan.realestate.service.EmailVerificationService;
 import vn.quanphan.realestate.service.UserService;
 import vn.quanphan.realestate.util.SecurityUtil;
 import vn.quanphan.realestate.util.anotation.ApiMessage;
+import vn.quanphan.realestate.util.constant.AccountStatus;
 import vn.quanphan.realestate.util.error.IdInvalidException;
 
 @RestController
@@ -119,30 +120,9 @@ public class AuthController {
         String hashPassword = this.passwordEncoder.encode(postmanUser.getPassword());
         postmanUser.setPassword(hashPassword);
         postmanUser.setRole(this.userService.getRoleByName("USER"));
+        postmanUser.setStatus(AccountStatus.ACTIVE);
         User currentUser = this.userService.handleCreateUser(postmanUser);
         emailVerificationService.sendVerificationToken(currentUser.getId(), currentUser.getEmail());
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResRegisterUserDTO(currentUser));
-    }
-
-    @PostMapping("/auth/registerAdmin")
-    @ApiMessage("Register")
-    public ResponseEntity<ResRegisterUserDTO> registerAdmin(@Valid @RequestBody User postmanUser)
-            throws IdInvalidException {
-        boolean isEmailExist = this.userService.isEmailExist(postmanUser.getEmail());
-        boolean isPhoneNumberExist = this.userService.isPhoneNumberExist(postmanUser.getPhoneNumber());
-        if (isEmailExist) {
-            throw new IdInvalidException(
-                    "Email " + postmanUser.getEmail() + "đã tồn tại, vui lòng sử dụng email khác.");
-        }
-        if (isPhoneNumberExist) {
-            throw new IdInvalidException(
-                    "Số điện thoại " + postmanUser.getPhoneNumber() + "đã tồn tại, vui lòng sử dụng số điện thoại khác.");
-        }
-        String hashPassword = this.passwordEncoder.encode(postmanUser.getPassword());
-        postmanUser.setPassword(hashPassword);
-        postmanUser.setRole(this.userService.getRoleByName("ADMIN"));
-        User currentUser = this.userService.handleCreateUser(postmanUser);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResRegisterUserDTO(currentUser));
     }
 

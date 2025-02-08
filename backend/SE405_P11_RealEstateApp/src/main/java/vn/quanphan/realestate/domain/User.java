@@ -3,8 +3,6 @@ package vn.quanphan.realestate.domain;
 import java.time.Instant;
 import java.util.UUID;
 
-
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -23,6 +21,7 @@ import lombok.Getter;
 
 import lombok.Setter;
 import vn.quanphan.realestate.util.SecurityUtil;
+import vn.quanphan.realestate.util.constant.AccountStatus;
 import vn.quanphan.realestate.util.constant.Gender;
 
 @Getter
@@ -51,7 +50,9 @@ public class User {
     private String phoneNumber;
     @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
-    private String IdCardNumber;
+    @Enumerated(EnumType.STRING)
+    private AccountStatus status;
+    private String avatar;
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;

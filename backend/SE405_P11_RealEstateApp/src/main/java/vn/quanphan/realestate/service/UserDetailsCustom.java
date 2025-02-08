@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import vn.quanphan.realestate.util.constant.AccountStatus;
+
 @Component("userDetailsService")
 public class UserDetailsCustom implements UserDetailsService {
 
@@ -28,7 +30,9 @@ public class UserDetailsCustom implements UserDetailsService {
         if (!user.getEmailVerified()) {
             throw new BadCredentialsException("Email chưa được xác thực");
         }
-
+        if (user.getStatus() == AccountStatus.INACTIVE || user.getStatus() == null) {
+            throw new BadCredentialsException("Tài khoản đã bị khóa");
+        }
         // Lấy tên role từ user
         String role = user.getRole().getName();
 
