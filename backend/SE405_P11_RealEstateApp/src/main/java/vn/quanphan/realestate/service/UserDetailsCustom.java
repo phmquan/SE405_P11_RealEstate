@@ -30,7 +30,7 @@ public class UserDetailsCustom implements UserDetailsService {
         if (!user.getEmailVerified()) {
             throw new BadCredentialsException("Email chưa được xác thực");
         }
-        if (user.getStatus() == AccountStatus.INACTIVE || user.getStatus() == null) {
+        if (user.getStatus() == AccountStatus.BANNED || user.getStatus() == null) {
             throw new BadCredentialsException("Tài khoản đã bị khóa");
         }
         // Lấy tên role từ user

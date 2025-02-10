@@ -10,8 +10,11 @@ import vn.quanphan.realestate.domain.SpecificationListingPage;
 import vn.quanphan.realestate.domain.User;
 import vn.quanphan.realestate.domain.response.ResAdminHomepageDTO;
 import vn.quanphan.realestate.domain.response.admin.ResListingAdminDTO;
+import vn.quanphan.realestate.domain.response.admin.ResListingDetailDTO;
 import vn.quanphan.realestate.domain.response.admin.ResSpecificationAdminDTO;
+import vn.quanphan.realestate.domain.response.admin.ResSpecificationDetailDTO;
 import vn.quanphan.realestate.domain.response.admin.ResUserAdminDTO;
+import vn.quanphan.realestate.domain.response.admin.ResUserDetailDTO;
 
 @Service
 public class AdminService {
@@ -68,10 +71,49 @@ public class AdminService {
         resSpecificationAdminDTO.setId(Long.toString(specificationListingPage.getId()));
         resSpecificationAdminDTO.setName(specificationListingPage.getPageName());
         resSpecificationAdminDTO.setDescription(specificationListingPage.getDescription());
-        resSpecificationAdminDTO.setBrokerCertificationNumber(specificationListingPage.getBrokerCertification().getNameOnCertification());
+        resSpecificationAdminDTO.setNameOnCertification(specificationListingPage.getBrokerCertification().getNameOnCertification());
         resSpecificationAdminDTO.setBrokerCertificationNumber(specificationListingPage.getBrokerCertification().getCertificationNumber());
         resSpecificationAdminDTO.setStatus(specificationListingPage.getStatus().toString());
         return resSpecificationAdminDTO;
+    }
+
+    public ResUserDetailDTO convertToUserDetailDTO(User user) {
+        ResUserDetailDTO resUserDetailDTO = new ResUserDetailDTO();
+        resUserDetailDTO.setName(user.getName());
+        resUserDetailDTO.setEmail(user.getEmail());
+        resUserDetailDTO.setAge(Integer.toString(user.getAge()));
+        resUserDetailDTO.setPhone(user.getPhoneNumber());
+        resUserDetailDTO.setStatus(user.getStatus().toString());
+        resUserDetailDTO.setAvatar(user.getAvatar());
+        return resUserDetailDTO;
+    }
+
+    public ResListingDetailDTO convertToListingDetailDTO(Listing listing) {
+        ResListingDetailDTO resListingDetailDTO = new ResListingDetailDTO();
+        ResListingDetailDTO.Property property = resListingDetailDTO.new Property();
+        resListingDetailDTO.setUserEmail(listing.getUser().getEmail());
+        resListingDetailDTO.setListingType(listing.getListingType());
+        resListingDetailDTO.setPropertyType(listing.getPropertyType());
+        property.setAddress(listing.getProperty().getAddress());
+        property.setDistrict(listing.getProperty().getDistrict());
+        property.setPropertyArea(Double.toString(listing.getProperty().getPropertyArea()));
+        property.setLegalDocument(listing.getProperty().getLegalDocument());
+        resListingDetailDTO.setProperty(property);
+        return resListingDetailDTO;
+    }
+
+    public ResSpecificationDetailDTO convertToSpecificationDetailDTO(SpecificationListingPage specificationListingPage) {
+        ResSpecificationDetailDTO resSpecificationDetailDTO = new ResSpecificationDetailDTO();
+        ResSpecificationDetailDTO.BrokerCertification brokerCertification = resSpecificationDetailDTO.new BrokerCertification();
+        resSpecificationDetailDTO.setPageName(specificationListingPage.getPageName());
+        resSpecificationDetailDTO.setFullName(specificationListingPage.getFullName());
+        resSpecificationDetailDTO.setBrokerArea(specificationListingPage.getBrokerArea());
+        resSpecificationDetailDTO.setWorkingPlaceAdress(specificationListingPage.getWorkingPlaceAdress());
+        brokerCertification.setNameOnCertification(specificationListingPage.getBrokerCertification().getNameOnCertification());
+        brokerCertification.setCertificationNumber(specificationListingPage.getBrokerCertification().getCertificationNumber());
+        brokerCertification.setCertificationAuthority(specificationListingPage.getBrokerCertification().getCertificationAuthority());
+        resSpecificationDetailDTO.setBrokerCertification(brokerCertification);
+        return resSpecificationDetailDTO;
     }
 
 }

@@ -310,4 +310,18 @@ public class ListingService {
         // TODO Auto-generated method stub
         return listingRepository.countByStatus(pending);
     }
+
+    public void acceptListing(String id) {
+        listingRepository.findById(Long.parseLong(id)).ifPresent(listing -> {
+            listing.setStatus(ListingStatus.DISPLAYING);
+            listingRepository.save(listing);
+        });
+    }
+
+    public void rejectListing(String id) {
+        listingRepository.findById(Long.parseLong(id)).ifPresent(listing -> {
+            listing.setStatus(ListingStatus.DECLINED);
+            listingRepository.save(listing);
+        });
+    }
 }

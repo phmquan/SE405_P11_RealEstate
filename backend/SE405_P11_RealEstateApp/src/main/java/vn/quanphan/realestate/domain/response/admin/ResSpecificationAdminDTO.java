@@ -10,7 +10,7 @@ public class ResSpecificationAdminDTO {
     private String id;
     private String name;
     private String description;
-    private String nameOneCertification;
+    private String nameOnCertification;
     private String brokerCertificationNumber;
     private String status;
     private String totalRow;

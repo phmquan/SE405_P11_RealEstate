@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import useFetchData from "../../data/useFetchData"; // adjust path as needed
+import useFetchData from "../../data/useFetchData"; // Adjust path as needed
 import { Link } from "react-router-dom";
 import "./datatable.scss";
-const Datatable = ({ type }) => {
-  // State for pageSize and current page.
-  const [pageSize, setPageSize] = useState(10);
-  // Using 1-indexed page for the endpoint.
-  const [currentPage, setCurrentPage] = useState(1);
+import api from "../../api/AxiosInterceptors";
 
-  // Determine the API endpoint based on type and include current page and pageSize
+const Datatable = ({ type }) => {
+  // State for pageSize, current page, and selection.
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectionModel, setSelectionModel] = useState([]);
+
+  // Determine the API endpoint based on type and include current page and pageSize.
   let endpoint;
   if (type === "user") {
     endpoint = `/admin/user?current=${currentPage}&pageSize=50`;
@@ -19,8 +21,8 @@ const Datatable = ({ type }) => {
     endpoint = `/admin/specification?current=${currentPage}&pageSize=50`;
   }
 
-  // Fetch data from the API using a custom hook
-  const { data, loading, error } = useFetchData(endpoint);
+  // Fetch data from the API using a custom hook, along with the refresh function.
+  const { data, loading, error, refreshData } = useFetchData(endpoint);
 
   // Define the base columns for each type.
   let baseColumns = [];
@@ -46,13 +48,51 @@ const Datatable = ({ type }) => {
       { field: "id", headerName: "ID", width: 70 },
       { field: "name", headerName: "Tên chuyên trang", width: 230 },
       { field: "description", headerName: "Mô tả", width: 230 },
-      { field: "nameOneCertification", headerName: "Tên trên chứng chỉ", width: 230 },
+      { field: "nameOnCertification", headerName: "Tên trên chứng chỉ", width: 230 },
       { field: "brokerCertificationNumber", headerName: "Số chứng chỉ", width: 150 },
       { field: "status", headerName: "Trạng thái", width: 100 },
     ];
   }
 
-  // Define an action column that will be appended to your base columns.
+  // --- BULK ACTION HANDLERS ---
+
+  // For types other than "user"
+  const handleBulkAccept = async () => {
+    console.log("Selected rows to accept:", selectionModel);
+    try {
+      const response = await api.post(`admin/${type}/acceptBulk`, selectionModel);
+      alert("Bulk accept response: " + JSON.stringify(response.data));
+      refreshData();
+    } catch (error) {
+      console.error("Error accepting items: " + error);
+    }
+  };
+
+  const handleBulkReject = async () => {
+    console.log("Selected rows to reject:", selectionModel);
+    try {
+      const response = await api.post(`admin/${type}/rejectBulk`, selectionModel);
+      alert("Bulk reject response: " + JSON.stringify(response.data));
+      refreshData();
+    } catch (error) {
+      console.error("Error rejecting items: " + error);
+    }
+  };
+
+  // For type "user" only
+  const handleBulkBan = async () => {
+    console.log("Selected users to ban: " + JSON.stringify(selectionModel));
+    try {
+      const response = await api.post(`admin/${type}/banBulk`, selectionModel);
+      alert("Bulk ban response: " + JSON.stringify(response.data));
+      refreshData();
+    } catch (error) {
+      console.error("Error banning users: " + error);
+    }
+  };
+
+  // --- ACTION COLUMN (per-row buttons) ---
+
   const actionColumn = [
     {
       field: "action",
@@ -63,40 +103,101 @@ const Datatable = ({ type }) => {
           <Link to={`/${type}/${params.row.id}`}>
             <div className="detailButton">Xem chi tiết</div>
           </Link>
-          <div
-            className="acceptButton"
-            onClick={() => {
-              // Handle the accept action here.
-            }}
-          >
-            Chấp nhận
-          </div>
-          <div
-            className="rejectButton"
-            onClick={() => {
-              // Handle the reject action here.
-            }}
-          >
-            Từ chối
-          </div>
+          {type === "user" ? (
+            // For type "user", only show the Ban button
+            <div
+              className="banButton"
+              onClick={async () => {
+                try {
+                  const response = await api.get(`admin/${type}/${params.row.id}/ban`);
+                  console.log("Ban response: " + JSON.stringify(response.data));
+                  refreshData();
+                } catch (error) {
+                  console.log("Error banning user: " + error);
+                }
+              }}
+            >
+              Ban
+            </div>
+          ) : (
+            // For other types, show the Accept and Reject buttons
+            <>
+              <div
+                className="acceptButton"
+                onClick={async () => {
+                  try {
+                    const response = await api.get(`admin/${type}/${params.row.id}/accept`);
+                    alert("Accept response: " + JSON.stringify(response.data));
+                    refreshData();
+                  } catch (error) {
+                    console.error("Error accepting item: " + error);
+                  }
+                }}
+              >
+                Chấp nhận
+              </div>
+              <div
+                className="rejectButton"
+                onClick={async () => {
+                  try {
+                    const response = await api.get(`admin/${type}/${params.row.id}/reject`);
+                    alert("Reject response: " + JSON.stringify(response.data));
+                    refreshData();
+                  } catch (error) {
+                    console.error("Error rejecting item: " + error);
+                  }
+                }}
+              >
+                Từ chối
+              </div>
+            </>
+          )}
         </div>
       ),
     },
   ];
 
-  // Handle loading and error states.
+  // --- RENDERING ---
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading data</p>;
 
   return (
     <div style={{ height: "70vh", width: "100%" }} className="datatable">
-      <div className="datatableTitle">
-        {type === "user"
-          ? "Người dùng"
-          : type === "listing"
-            ? "Tin đăng chờ duyệt"
-            : "Chuyên trang chờ duyệt"}
+      <div className="datatableHead">
+        <div className="datatableTitle">
+          {type === "user"
+            ? "Người dùng"
+            : type === "listing"
+              ? "Tin đăng chờ duyệt"
+              : "Chuyên trang chờ duyệt"}
+        </div>
+        {type === "user" ? (
+          // For "user", display a single bulk action button to ban selected users.
+          <div className="bulkActions">
+            <div style={{ marginBottom: "10px" }}>
+              <button onClick={handleBulkBan} className="ban">
+                Ban đã chọn
+              </button>
+            </div>
+          </div>
+        ) : (
+          // For other types, display both Accept and Reject bulk action buttons.
+          <div className="bulkActions">
+            <div style={{ marginBottom: "10px" }}>
+              <button onClick={handleBulkAccept} className="accept">
+                Chấp nhận
+              </button>
+            </div>
+            <div style={{ marginBottom: "10px" }}>
+              <button onClick={handleBulkReject} className="reject">
+                Từ chối
+              </button>
+            </div>
+          </div>
+        )}
       </div>
+
       <DataGrid
         className="datagrid"
         rows={data}
@@ -104,13 +205,13 @@ const Datatable = ({ type }) => {
         pageSize={pageSize}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         rowsPerPageOptions={[10, 20, 50]}
-        // Enable server-side pagination:
         pagination
         paginationMode="server"
-        // DataGrid pages are zero-indexed, so subtract 1 when setting the page.
         page={currentPage - 1}
         onPageChange={(newPage) => setCurrentPage(newPage + 1)}
         checkboxSelection
+        onSelectionModelChange={(newSelection) => setSelectionModel(newSelection)}
+        selectionModel={selectionModel}
       />
     </div>
   );

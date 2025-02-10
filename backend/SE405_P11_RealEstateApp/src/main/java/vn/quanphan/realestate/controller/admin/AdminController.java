@@ -9,6 +9,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,8 +32,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import vn.quanphan.realestate.domain.User;
 import vn.quanphan.realestate.domain.response.admin.ResListingAdminDTO;
+import vn.quanphan.realestate.domain.response.admin.ResListingDetailDTO;
 import vn.quanphan.realestate.domain.response.admin.ResSpecificationAdminDTO;
+import vn.quanphan.realestate.domain.response.admin.ResSpecificationDetailDTO;
 import vn.quanphan.realestate.domain.response.admin.ResUserAdminDTO;
+import vn.quanphan.realestate.domain.response.admin.ResUserDetailDTO;
 
 @RestController
 @RequiredArgsConstructor
@@ -106,4 +112,94 @@ public class AdminController {
         return ResponseEntity.ok().body(SpecificationDTOs);
     }
 
+    @GetMapping("/user/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable("id") String id) {
+        User user = userService.getUserById(id);
+        ResUserDetailDTO userDTO = adminService.convertToUserDetailDTO(user);
+        return ResponseEntity.ok().body(userDTO);
+    }
+
+    @GetMapping("/listing/{id}")
+    public ResponseEntity<?> getListingById(@PathVariable("id") String id) {
+        Listing listing = listingService.getListingById(id);
+        ResListingDetailDTO listingDTO = adminService.convertToListingDetailDTO(listing);
+        return ResponseEntity.ok().body(listingDTO);
+    }
+
+    @GetMapping("/specification/{id}")
+    public ResponseEntity<?> getSpecificationById(@PathVariable("id") String id) {
+        SpecificationListingPage specificationListingPage = specificationListingPageService.getSpecificationListingPageById(id);
+        ResSpecificationDetailDTO specificationDTO = adminService.convertToSpecificationDetailDTO(specificationListingPage);
+        return ResponseEntity.ok().body(specificationDTO);
+    }
+
+    @GetMapping("/user/{id}/ban")
+    public ResponseEntity<?> banUser(@PathVariable("id") String id) {
+        userService.banUser(id);
+        return ResponseEntity.ok().body("Ban user successfully");
+    }
+
+    @PostMapping("/user/banBulk")
+    public ResponseEntity<?> banUserBulk(@RequestBody List<String> ids) {
+        for (String id : ids) {
+            userService.banUser(id);
+        }
+        return ResponseEntity.ok().body("Ban user successfully");
+    }
+
+    @GetMapping("/listing/{id}/accept")
+    public ResponseEntity<?> acceptListing(@PathVariable("id") String id) {
+        listingService.acceptListing(id);
+        return ResponseEntity.ok().body("Accept listing successfully");
+    }
+
+    @GetMapping("/specification/{id}/accept")
+    public ResponseEntity<?> acceptSpecification(@PathVariable("id") String id) {
+        specificationListingPageService.acceptSpecification(id);
+        return ResponseEntity.ok().body("Accept listing successfully");
+    }
+
+    @GetMapping("/listing/{id}/reject")
+    public ResponseEntity<?> rejectListing(@PathVariable("id") String id) {
+        listingService.rejectListing(id);
+        return ResponseEntity.ok().body("Accept listing successfully");
+    }
+
+    @GetMapping("/specification/{id}/reject")
+    public ResponseEntity<?> rejectSpecification(@PathVariable("id") String id) {
+        specificationListingPageService.rejectSpecification(id);
+        return ResponseEntity.ok().body("Accept listing successfully");
+    }
+
+    @PostMapping("/listing/acceptBulk")
+    public ResponseEntity<?> acceptListingBulk(@RequestBody List<String> ids) {
+        for (String id : ids) {
+            listingService.acceptListing(id);
+        }
+        return ResponseEntity.ok().body("Accept listing successfully");
+    }
+
+    @PostMapping("/listing/rejectBulk")
+    public ResponseEntity<?> rejectListingBulk(@RequestBody List<String> ids) {
+        for (String id : ids) {
+            listingService.rejectListing(id);
+        }
+        return ResponseEntity.ok().body("Reject listing successfully");
+    }
+
+    @PostMapping("/specification/acceptBulk")
+    public ResponseEntity<?> acceptspecificationBulk(@RequestBody List<String> ids) {
+        for (String id : ids) {
+            specificationListingPageService.acceptSpecification(id);
+        }
+        return ResponseEntity.ok().body("Accept  successfully");
+    }
+
+    @PostMapping("/specification/rejectBulk")
+    public ResponseEntity<?> rejectspecificationBulk(@RequestBody List<String> ids) {
+        for (String id : ids) {
+            specificationListingPageService.rejectSpecification(id);
+        }
+        return ResponseEntity.ok().body("Reject successfully");
+    }
 }

@@ -36,6 +36,34 @@
     }
   }
 
+  .datatableHead {
+    display: flex;
+    justify-content: space-between;
+
+    .bulkActions {
+
+      border-radius: 5px;
+      display: flex;
+
+      .accept {
+        background-color: rgb(15, 121, 15);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+
+      .reject {
+        background-color: rgb(214, 25, 63);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    }
+  }
+
   .cellWithStatus {
     padding: 5px;
     border-radius: 5px;
@@ -61,6 +89,14 @@
     justify-content: space-around;
     gap: 15px;
     width: 100%;
+
+    .banButton {
+      padding: 2px 5px;
+      border-radius: 5px;
+      color: crimson;
+      border: 1px dotted rgba(220, 20, 60, 0.6);
+      cursor: pointer;
+    }
 
     .detailButton {
       padding: 2px 5px;

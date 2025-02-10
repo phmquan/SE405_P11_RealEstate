@@ -20,6 +20,7 @@ import vn.quanphan.realestate.domain.response.ResultPaginationDTO;
 import vn.quanphan.realestate.domain.response.ResultPaginationDTO.Meta;
 import vn.quanphan.realestate.repository.RoleRepository;
 import vn.quanphan.realestate.repository.UserRepository;
+import vn.quanphan.realestate.util.constant.AccountStatus;
 
 @Service
 public class UserService {
@@ -180,5 +181,15 @@ public class UserService {
 
     public List<User> getAllUser(Pageable pageable) {
         return this.userRepository.findAll(pageable).getContent();
+    }
+
+    public User getUserById(String id) {
+        return this.userRepository.findById(UUID.fromString(id)).get();
+    }
+
+    public void banUser(String id) {
+        User user = this.getUserById(id);
+        user.setStatus(AccountStatus.BANNED);
+        this.userRepository.save(user);
     }
 }
