@@ -173,4 +173,12 @@ public class UserService {
     public User getUserByEmail(String email) {
         return this.userRepository.findByEmail(email);
     }
+
+    public String countExceptRole(Role roleName) {
+        return this.userRepository.countByRoleNot(roleName);
+    }
+
+    public List<User> getAllUser(Pageable pageable) {
+        return this.userRepository.findAll(pageable).getContent();
+    }
 }

@@ -5,16 +5,16 @@ import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalance
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 
-const Widget = ({ type }) => {
-  let data;
+const Widget = ({ type, data }) => {
+  let dataConst = {};
 
   //temporary
-  const amount = 100;
+  const amount = data || 100;
   const diff = 20;
 
   switch (type) {
     case "user":
-      data = {
+      dataConst = {
         title: "Người dùng",
         isMoney: false,
         link: "See all users",
@@ -30,7 +30,7 @@ const Widget = ({ type }) => {
       };
       break;
     case "listings":
-      data = {
+      dataConst = {
         title: "Listings",
         isMoney: false,
         link: "View all listings",
@@ -46,7 +46,7 @@ const Widget = ({ type }) => {
       };
       break;
     case "specifications":
-      data = {
+      dataConst = {
         title: "Chuyên trang",
         isMoney: false,
         link: "View net earnings",
@@ -65,11 +65,11 @@ const Widget = ({ type }) => {
   return (
     <div className="widget">
       <div className="left">
-        <span className="title">{data.title}</span>
+        <span className="title">{dataConst.title}</span>
         <span className="counter">
-          {data.isMoney && "$"} {amount}
+          {dataConst.isMoney && "$"} {amount}
         </span>
-        <span className="link">{data.link}</span>
+        <span className="link">{dataConst.link}</span>
       </div>
       <div className="right">
         <div className="percentage positive">

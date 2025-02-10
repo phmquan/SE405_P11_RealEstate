@@ -305,4 +305,9 @@ public class ListingService {
                 .and(ListingSpecification.hasPriceBetween(minPrice, maxPrice));
         return listingRepository.findAll(spec);
     }
+
+    public String countByStatus(ListingStatus pending) {
+        // TODO Auto-generated method stub
+        return listingRepository.countByStatus(pending);
+    }
 }

@@ -14,4 +14,6 @@ public interface ListingRepository extends JpaRepository<Listing, Long>, JpaSpec
     long countByUser(User user);
 
     Page<Listing> findByStatus(ListingStatus status, Pageable pageable);
+
+    String countByStatus(ListingStatus status);
 }

@@ -30,27 +30,24 @@ const Sidebar = () => {
             <span>Dashboard</span>
           </li>
           <p className="title">LISTS</p>
-          <Link to="/users" style={{ textDecoration: "none" }}>
+          <Link to="/users" style={{ textDecoration: "none" }} >
             <li>
               <PersonOutlineIcon className="icon" />
               <span>Người dùng</span>
             </li>
           </Link>
-          <Link to="/listings" style={{ textDecoration: "none" }}>
+          <Link to="/listings" style={{ textDecoration: "none" }} >
             <li>
               <StoreIcon className="icon" />
               <span>Tin đăng</span>
             </li>
           </Link>
-          <Link to="/specifications" style={{ textDecoration: "none" }}>
+          <Link to="/specifications" style={{ textDecoration: "none" }} >
             <li>
               <CreditCardIcon className="icon" />
               <span>Chuyên trang</span>
             </li>
           </Link>
-
-
-
           <p className="title">USER</p>
           <li>
             <AccountCircleOutlinedIcon className="icon" />
@@ -62,16 +59,7 @@ const Sidebar = () => {
           </li>
         </ul>
       </div>
-      <div className="bottom">
-        <div
-          className="colorOption"
-          onClick={() => dispatch({ type: "LIGHT" })}
-        ></div>
-        <div
-          className="colorOption"
-          onClick={() => dispatch({ type: "DARK" })}
-        ></div>
-      </div>
+
     </div>
   );
 };

@@ -17,6 +17,7 @@ import vn.quanphan.realestate.util.constant.SpecificationListingPageStatus;
 @RequiredArgsConstructor
 public class SpecificationListingPageService {
 
+    
     private final SpecificationListingPageRepository specificationListingPageRepository;
     private final BrokerCertificationService brokerCertificationService;
     private final UserService userService;
@@ -66,6 +67,14 @@ public class SpecificationListingPageService {
 
     public SpecificationListingPage getSpecificationListingPageById(String id) {
         return specificationListingPageRepository.findById(Long.parseLong(id)).orElse(null);
+    }
+
+    public String countByStatus(SpecificationListingPageStatus pending) {
+        // TODO Auto-generated method stub
+        return specificationListingPageRepository.countByStatus(pending);
+    }
+    public List<SpecificationListingPage> getSpecificationListingPageByStatus(String pending, Pageable pageable) {
+        return specificationListingPageRepository.findByStatus(SpecificationListingPageStatus.PENDING, pageable).getContent();
     }
 
 }

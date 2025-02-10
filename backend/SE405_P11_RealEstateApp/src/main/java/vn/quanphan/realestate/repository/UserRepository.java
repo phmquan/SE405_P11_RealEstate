@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import vn.quanphan.realestate.domain.Role;
 import vn.quanphan.realestate.domain.User;
 
 @Repository
@@ -21,4 +22,7 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
     User findByRefreshTokenAndEmail(String token, String email);
 
     boolean existsByPhoneNumber(String phoneNumber);
+
+    String countByRoleNot(Role role);
+
 }
